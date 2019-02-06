@@ -1,5 +1,6 @@
 var cookieParser = require("cookie-parser");
 const createError = require("http-errors");
+const todosRoutes = require("./expressRoutes/todosRoutes")
 // expressの呼び込み
 const express = require("express");
 // PORTの設定
@@ -14,6 +15,7 @@ app.use(express.static(__dirname + "/dist/"));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use("/todos", todosRoutes)
 // SPAの時、ルーティングがうまくいかない時があるので以下の設定
 // これをしていないと、https://~~~/aboutとかに行った時にリロードするとエラーがでる
 // SPAだとaboutファイルを直で読み込んでいないから
@@ -22,7 +24,13 @@ app.use(express.urlencoded({ extended: false }));
 app.get(/.*/, function(req, res) {
   res.sendfile(__dirname + "/dist/index.html");
 });
-
+var mongoose = require("mongoose");
+const mongoDB = "mongodb://localhost/todos";
+mongoose.connect(mongoDB,{useNewUrlParser: true});
+mongoose.Promise = global.Promise;
+const db = mongoose.connection;
+ //Bind connection to error event (to get notification of connection errors)
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(function(req, res, next) {
   next(createError(404));
 });
