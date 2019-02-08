@@ -25,7 +25,7 @@ app.get(/.*/, function(req, res) {
   res.sendfile(__dirname + "/dist/index.html");
 });
 var mongoose = require("mongoose");
-const mongoDB = "mongodb://localhost/todos";
+const mongoDB = "mongodb://heroku_8v9x1jzj:39ca6ucrp5tnnt247oa4nnmdrq@ds227185.mlab.com:27185/heroku_8v9x1jzj";
 mongoose.connect(mongoDB,{useNewUrlParser: true});
 mongoose.Promise = global.Promise;
 const db = mongoose.connection;
