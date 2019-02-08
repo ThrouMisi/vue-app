@@ -1,15 +1,15 @@
 <template>
-  <div class="editTodo">
+  <div class="createTodo">
     <div id="inline">
       <div>
-        <form v-on:submit.prevent="editTodo">
+        <form  v-on:submit.prevent="createTodo">
           <div class="name-form form-group">
-            <label class="control-label">Name</label>
-            <input class="name-input form-control" type="text" v-model="todo.name"/>
+            <label  class="control-label">Name</label>
+            <input class="name-input form-control" type="text" v-model="newTodo.name" />
           </div>
           <div class="descript-form form-group">
             <label class="control-label">Description</label>
-            <textarea class="descript-input form-control" type="text" v-model="todo.description" rows="4"/>
+            <textarea class="descript-input form-control" type="text" v-model="newTodo.description" rows="4" />
           </div>
           <button class="submit btn btn-primary" type="submit" name="button" @click="closeModal" :disabled="!disabled">Submit</button>
         </form>
@@ -25,29 +25,26 @@ import { mapState, mapActions, mapGetters } from "vuex";
 import v8n from 'v8n';
 
 export default {
-  name: "editModal",
-  props: [
-    "Todo"
-  ],
+  name: "createTodo",
   data(){
     return {
-      todo: {
-        id: this.Todo.id,
-        name: this.Todo.name,
-        description: this.Todo.description,
-        isComplete: this.Todo.isComplete
+      newTodo: {
+        name: "",
+        description: "",
       }
     }
   },
   computed: {
     disabled() {
-      return this.validate(this.todo.name)
+      return this.validate(this.newTodo.name)
     }
   },
   methods: {
-    editTodo() {
-      this.$store.dispatch("todos/editTodo", this.todo);
-      this.$modal.hide("editTodo")
+    createTodo() {
+      if (this.newTodo) {
+        this.$store.dispatch("todos/createTodo", this.newTodo);
+      }
+      this.newTodo = {}
     },
     closeModal() {
       this.$emit("close")
@@ -57,16 +54,17 @@ export default {
         .not.null()
         .not.empty()
         .not.first(" ")
-        .not.first("　")
+        .not.first("?")
         .test(words)
     },
+
   },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.editTodo{
+.createTodo {
   top: 20px;
   position: relative;
 }
@@ -100,4 +98,5 @@ export default {
 .descript-input {
   width: 98%;
 }
+
 </style>
